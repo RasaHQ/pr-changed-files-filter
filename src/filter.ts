@@ -36,6 +36,14 @@ export default class Filter {
     return result
   }
 
+  allTrue(): {[key: string]: boolean} {
+    const result: {[key: string]: boolean} = {}
+    for (const [key, patterns] of Object.entries(this.rules)) {
+      result[key] = true
+    }
+    return result
+  }
+
   private throwInvalidFormatError(): never {
     throw new Error('Invalid filter YAML format: Expected dictionary of string arrays')
   }
