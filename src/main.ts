@@ -11,19 +11,22 @@ async function run(): Promise<void> {
     const token = core.getInput('token', {required: false})
     const filtersInput = core.getInput('filters', {required: true})
     const filtersYaml = isPathInput(filtersInput) ? getConfigFileContent(filtersInput) : filtersInput
-
-    if (github.context.eventName !== 'pull_request') {
-      core.setFailed('This action can be triggered only by pull_request event')
-      return
-    }
-
-    const pr = github.context.payload.pull_request as Webhooks.WebhookPayloadPullRequestPullRequest
     const filter = new Filter(filtersYaml)
-    const files = token ? await getChangedFilesFromApi(token, pr) : await getChangedFilesFromGit(pr)
+    
+    if (github.context.eventName !== 'pull_request') {
+      // if this isn't a PR we return true for all filters by default
+      const result = filter.allTrue()
+      for (const key in result) {
+        core.setOutput(key, String(result[key]))
+      }
+    } else {
+      const pr = github.context.payload.pull_request as Webhooks.WebhookPayloadPullRequestPullRequest
+      const files = token ? await getChangedFilesFromApi(token, pr) : await getChangedFilesFromGit(pr)
 
-    const result = filter.match(files)
-    for (const key in result) {
-      core.setOutput(key, String(result[key]))
+      const result = filter.match(files)
+      for (const key in result) {
+        core.setOutput(key, String(result[key]))
+      }    
     }
   } catch (error) {
     core.setFailed(error.message)
