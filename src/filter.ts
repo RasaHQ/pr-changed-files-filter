@@ -63,7 +63,7 @@ export class Filter {
 
   allTrue(): {[key: string]: boolean} {
     const result: {[key: string]: boolean} = {}
-    for (const [key, patterns] of Object.entries(this.rules)) {
+    for (const key of Object.keys(this.rules)) {
       result[key] = true
     }
     return result
