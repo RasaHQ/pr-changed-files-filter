@@ -69,10 +69,6 @@ export class Filter {
     return result
   }
 
-  private throwInvalidFormatError(): never {
-    throw new Error('Invalid filter YAML format: Expected dictionary of string arrays')
-  }
-
   private isMatch(file: File, patterns: FilterRuleItem[]): boolean {
     return patterns.some(
       rule => (rule.status === undefined || rule.status.includes(file.status)) && rule.isMatch(file.filename)
