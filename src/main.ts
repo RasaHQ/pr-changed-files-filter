@@ -37,15 +37,10 @@ async function run(): Promise<void> {
         core.setOutput(key, String(result[key]))
       }
     } else {
-      const pr = github.context.payload.pull_request as Webhooks.WebhookPayloadPullRequestPullRequest
-      // const files = token ? await getChangedFilesFromApi(token, pr) : await getChangedFilesFromGit(pr)  // NOTE: I think this one can be replaced by what's below
       const files = await getChangedFiles(token, base, initialFetchDepth)
 
       const result = filter.match(files)
-      exportResults(result, listFiles)  // NOTE: I believe this is the same as what's below
-       // for (const key in result) {
-       //   core.setOutput(key, String(result[key]))
-       // }
+      exportResults(result, listFiles)
     }
   } catch (error) {
     core.setFailed(error.message)
