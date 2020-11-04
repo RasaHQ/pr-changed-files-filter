@@ -5111,33 +5111,6 @@ const github = __importStar(__webpack_require__(469));
 const filter_1 = __webpack_require__(235);
 const file_1 = __webpack_require__(258);
 const git = __importStar(__webpack_require__(136));
-<<<<<<< HEAD
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const token = core.getInput('token', { required: false });
-            const filtersInput = core.getInput('filters', { required: true });
-            const filtersYaml = isPathInput(filtersInput) ? getConfigFileContent(filtersInput) : filtersInput;
-            const filter = new filter_1.default(filtersYaml);
-            if (github.context.eventName !== 'pull_request') {
-                // if this isn't a PR we return true for all filters by default
-                const result = filter.allTrue();
-                for (const key in result) {
-                    core.setOutput(key, String(result[key]));
-                }
-            }
-            else {
-                const pr = github.context.payload.pull_request;
-                const files = token ? yield getChangedFilesFromApi(token, pr) : yield getChangedFilesFromGit(pr);
-                const result = filter.match(files);
-                for (const key in result) {
-                    core.setOutput(key, String(result[key]));
-                }
-            }
-        }
-        catch (error) {
-            core.setFailed(error.message);
-=======
 const shell_escape_1 = __importDefault(__webpack_require__(751));
 async function run() {
     try {
@@ -5149,17 +5122,26 @@ async function run() {
         const base = core.getInput('base', { required: false });
         const filtersInput = core.getInput('filters', { required: true });
         const filtersYaml = isPathInput(filtersInput) ? getConfigFileContent(filtersInput) : filtersInput;
+        const filter = new filter_1.default(filtersYaml);
         const listFiles = core.getInput('list-files', { required: false }).toLowerCase() || 'none';
         const initialFetchDepth = parseInt(core.getInput('initial-fetch-depth', { required: false })) || 10;
         if (!isExportFormat(listFiles)) {
             core.setFailed(`Input parameter 'list-files' is set to invalid value '${listFiles}'`);
             return;
->>>>>>> upstream/master
         }
-        const filter = new filter_1.Filter(filtersYaml);
-        const files = await getChangedFiles(token, base, initialFetchDepth);
-        const results = filter.match(files);
-        exportResults(results, listFiles);
+        if (github.context.eventName !== 'pull_request') {
+            // if this isn't a PR we return true for all filters by default
+            const result = filter.allTrue();
+            for (const key in result) {
+                core.setOutput(key, String(result[key]));
+            }
+        }
+        else {
+            const filter = new filter_1.Filter(filtersYaml);
+            const files = await getChangedFiles(token, base, initialFetchDepth);
+            const results = filter.match(files);
+            exportResults(results, listFiles);
+        }
     }
     catch (error) {
         core.setFailed(error.message);
@@ -5495,78 +5477,10 @@ module.exports = {
   }
 };
 
-
-<<<<<<< HEAD
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const jsyaml = __importStar(__webpack_require__(414));
-const minimatch = __importStar(__webpack_require__(595));
-class Filter {
-    constructor(yaml) {
-        this.rules = {};
-        const doc = jsyaml.safeLoad(yaml);
-        if (typeof doc !== 'object') {
-            this.throwInvalidFormatError();
-        }
-        const opts = {
-            dot: true
-        };
-        for (const name of Object.keys(doc)) {
-            const patterns = doc[name];
-            if (!Array.isArray(patterns)) {
-                this.throwInvalidFormatError();
-            }
-            if (!patterns.every(x => typeof x === 'string')) {
-                this.throwInvalidFormatError();
-            }
-            this.rules[name] = patterns.map(x => new minimatch.Minimatch(x, opts));
-        }
-    }
-    // Returns dictionary with match result per rules group
-    match(paths) {
-        const result = {};
-        for (const [key, patterns] of Object.entries(this.rules)) {
-            const match = paths.some(fileName => patterns.some(rule => rule.match(fileName)));
-            result[key] = match;
-        }
-        return result;
-    }
-    allTrue() {
-        const result = {};
-        for (const [key, patterns] of Object.entries(this.rules)) {
-            result[key] = true;
-        }
-        return result;
-    }
-    throwInvalidFormatError() {
-        throw new Error('Invalid filter YAML format: Expected dictionary of string arrays');
-    }
-}
-exports.default = Filter;
-=======
 /***/ }),
 
 /***/ 211:
 /***/ (function(module) {
->>>>>>> upstream/master
 
 module.exports = require("https");
 
