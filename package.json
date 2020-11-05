@@ -1,8 +1,8 @@
 {
-  "name": "pr-changed-files-filter",
+  "name": "paths-filter",
   "version": "1.0.0",
   "private": true,
-  "description": "Enables conditional execution of workflow job steps considering which files are modified by a pull request.",
+  "description": "Execute your workflow steps only if relevant files are modified.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -29,16 +29,17 @@
     "@actions/exec": "^1.0.4",
     "@actions/github": "^2.2.0",
     "@octokit/webhooks": "^7.6.2",
-    "minimatch": "^3.0.4"
+    "micromatch": "^4.0.2"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/js-yaml": "^3.12.4",
+    "@types/micromatch": "^4.0.1",
     "@types/minimatch": "^3.0.3",
     "@types/node": "^14.0.5",
-    "@typescript-eslint/parser": "^3.0.0",
+    "@typescript-eslint/parser": "^3.3.0",
     "@zeit/ncc": "^0.22.3",
-    "eslint": "^5.16.0",
+    "eslint": "^7.3.0",
     "eslint-plugin-github": "^2.0.0",
     "eslint-plugin-jest": "^22.21.0",
     "jest": "^26.0.1",
